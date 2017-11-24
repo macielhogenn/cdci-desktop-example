@@ -1,0 +1,80 @@
+group 'br.udesc'
+version '1.0.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.8
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        credentials {
+            username = "$System.env.NEXUS_UDESC_USERNAME"
+            password = "$System.env.NEXUS_UDESC_PASSWORD"
+        }
+        url "http://nexus.hogenn.com/nexus/content/repositories/releases"
+
+    }
+
+    maven {
+        credentials {
+            username = "$System.env.NEXUS_UDESC_USERNAME"
+            password = "$System.env.NEXUS_UDESC_PASSWORD"
+        }
+        url "http://nexus.hogenn.com/nexus/content/repositories/snapshots"
+    }
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            def credentials = [
+                    userName: "$System.env.NEXUS_UDESC_USERNAME",
+                    password: "$System.env.NEXUS_UDESC_PASSWORD"
+            ]
+            configuration = configurations.deployerJars
+
+            repository(url: "http://nexus.hogenn.com/nexus/content/repositories/releases") {
+                authentication(credentials)
+            }
+            snapshotRepository(url: "http://nexus.hogenn.com/nexus/content/repositories/snapshots") {
+                authentication(credentials)
+            }
+        }
+    }
+}
+
+configurations {
+    deployerJars
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.runtime
+}
+jar.dependsOn(copyToLib)
+
+def mainClassName = 'br.udesc.App'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName,
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+        // Keep jar clean:
+        exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+
+    }
+}
