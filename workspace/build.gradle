@@ -7,6 +7,10 @@ apply plugin: 'maven'
 sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
+configurations {
+    deployerJars
+}
+
 repositories {
     mavenCentral()
 
@@ -28,6 +32,8 @@ repositories {
     }
 }
 
+
+
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -47,9 +53,7 @@ uploadArchives {
     }
 }
 
-configurations {
-    deployerJars
-}
+
 
 buildscript {
     repositories {
@@ -59,6 +63,8 @@ buildscript {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    deployerJars "org.apache.maven.wagon:wagon-http:2.10"
 }
 
 task copyToLib(type: Copy) {
