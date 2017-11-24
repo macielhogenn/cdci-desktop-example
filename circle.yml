@@ -7,7 +7,7 @@ machine:
     IMAGE_NAME: macielhogenn/cdci-desktop-example
 
 general:
-  build_dir: workspace/cdci-desktop-example/
+  build_dir: workspace/
   branches:
     ignore:
       - gh-pages # list of branches to ignore
