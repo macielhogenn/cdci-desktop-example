@@ -32,8 +32,6 @@ deployment:
       commands:
         - gradle build
         - gradle uploadArchives
-        - docker info
-        - docker build -t $IMAGE_NAME:master ./cdci-desktop-example
   release_branches:
       branch: /[1-9].*/
       commands:

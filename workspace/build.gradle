@@ -58,6 +58,7 @@ uploadArchives {
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
 }
 
