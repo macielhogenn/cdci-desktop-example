@@ -5,6 +5,6 @@ import javax.swing.*;
 public class App {
 
     public static void main(String[] args) {
-        JOptionPane.showMessageDialog(null, "Hello, World");
+        JOptionPane.showMessageDialog(null, "Hello, World MPS");
     }
 }
