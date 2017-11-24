@@ -1,0 +1,49 @@
+#https://circleci.com/docs/configuration/
+
+machine:
+  java:
+    version: openjdk8
+  environment:
+    IMAGE_NAME: macielhogenn/cdci-desktop-example
+
+general:
+  build_dir: workspace/cdci-desktop-example/
+  branches:
+    ignore:
+      - gh-pages # list of branches to ignore
+    #only:
+    #  - master # list of branches to build
+    #  - /feature-.*/ # or regexes
+
+test:
+#  override:
+#   - ./gradlew test --stacktrace
+  post:
+   - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+   - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+
+dependencies:
+  override:
+    - chmod +x gradlew
+
+deployment:
+  develop:
+      branch: master
+      commands:
+        - gradle build
+        - gradle uploadArchives
+        - docker info
+        - docker build -t $IMAGE_NAME:master ./cdci-desktop-example
+  release_branches:
+      branch: /[1-9].*/
+      commands:
+        - gradle build
+        - gradle uploadArchives
+  release_tags:
+      tag: /v.*/
+      commands:
+        - gradle build
+        - gradle uploadArchives
+
+
+#    tag: /v[0-9]+(\.[0-9]+)*/
